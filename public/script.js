@@ -42,10 +42,17 @@ async function getIP(){
     const response = await fetch(api_url + ip);
     const data = await response.json();
     console.log(data)
-    table("ip_table",data);
     marker.setLatLng([data.lat, data.lon]);
-    marker.bindPopup("<b>Hello world!</b><br>I am a popup .").openPopup();
+    marker.bindPopup(`
+        <b>${data.isp} </br> ${data.as}</b> </br>
+        City: ${data.city}</br>
+        Region: ${data.region}</br>
+        Country: ${data.country}</br>
+        Lat: ${data.lat} Lon: ${data.lon}
+        `).openPopup();
     getGrey();
+    getShodan();
+    getGreynoise();
 }
 
 function table(div_name,data){
@@ -96,4 +103,20 @@ async function getDB(){
     }
     console.log(data);
 
+}
+
+async function getShodan(){
+    const shodanapi_url = `/ip/${ip}`;
+    const response = await fetch(shodanapi_url);
+    const json = await response.json();
+    console.log(json);
+    table("grey_table",json);
+}
+
+async function getGreynoise(){
+    const shodanapi_url = `/greynoise/${ip}`;
+    const response = await fetch(shodanapi_url);
+    const json = await response.json();
+    console.log(json);
+    table("grey_table",json);
 }
