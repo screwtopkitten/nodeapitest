@@ -3,3 +3,47 @@
     width: 640px;
 
 }
+body {
+    color: rgb(255, 255, 255);
+    background-color: #000;
+    margin: 0;
+    padding: 0;
+  }
+
+.grid{
+    display:grid;
+    gap: 1rem;
+    grid-template-columns: repeat(4, 1fr);
+  
+    /*explicit grid*/
+  }
+  
+  .grid-item{
+    background-color: rgb(85, 85, 85);
+    color:azure;
+    padding: 10px;
+    margin: 10px;
+  }
+
+  .grid-body{
+    background-color: rgb(85, 85, 85);
+    color:azure;
+    grid-column: 3 / 5;
+    padding: 10px;
+    margin: 10px;
+  }
+  
+  .grid-header{
+    grid-column: 1 / 5;
+    background-color: #000;
+    
+  }
+
+  .grid-footer{
+    grid-column: 1 / 5;
+    background-color: rgb(85, 85, 85);
+    color:azure;
+    padding: 20px;
+    margin: 20px;
+    
+  }

@@ -9,16 +9,6 @@ const tiles = L.tileLayer(tileUrl,{attribution});
 const marker = L.marker([0, 0]).addTo(mymap);
 tiles.addTo(mymap);
 
-//greynoise
-async function getGrey(){
-    const ip = document.getElementById('ip_value').value;
-    console.log(ip);
-    const response = await fetch(grey_url + ip);
-    const data = await response.json();
-    console.log(data)
-    // Create a new table
-    table("grey_table",data);
-}
 
 async function postAPI(){
     const data ={ip};
@@ -50,39 +40,11 @@ async function getIP(){
         Country: ${data.country}</br>
         Lat: ${data.lat} Lon: ${data.lon}
         `).openPopup();
-    getGrey();
-    getShodan();
-    getGreynoise();
-}
-
-function table(div_name,data){
-    var table = document.getElementById(div_name);
-
-// Add the table header
-var tr = document.createElement('tr');
-var leftRow = document.createElement('td');
-leftRow.innerHTML = "Name";
-tr.appendChild(leftRow);
-var rightRow = document.createElement('td');
-rightRow.innerHTML = "Value";
-tr.appendChild(rightRow);
-table.appendChild(tr);
-
-// Add the table rows
-for (var name in data) {
-    var value = data[name];
-    var tr = document.createElement('tr');
-    var leftRow = document.createElement('td');
-    leftRow.innerHTML = name;
-    tr.appendChild(leftRow);
-    var rightRow = document.createElement('td');
-    rightRow.innerHTML = value;
-    tr.appendChild(rightRow);
-    table.appendChild(tr);
-}
-
-// Add the created table to the HTML page
-document.body.appendChild(table);
+    
+    apiurls = ['/ip/', '/greynoise/' , '/vtip/' ];
+    apiurls.forEach(element => {
+        getAPI(element,ip,'#shodan');
+    });
 }
 
 async function getDB(){
@@ -105,18 +67,22 @@ async function getDB(){
 
 }
 
-async function getShodan(){
-    const shodanapi_url = `/ip/${ip}`;
-    const response = await fetch(shodanapi_url);
+async function getAPI(url, param, html_element){   
+    const response = await fetch(url + param);
     const json = await response.json();
     console.log(json);
-    table("grey_table",json);
+    updateText(json, html_element);
 }
 
-async function getGreynoise(){
-    const shodanapi_url = `/greynoise/${ip}`;
-    const response = await fetch(shodanapi_url);
-    const json = await response.json();
-    console.log(json);
-    table("grey_table",json);
+function updateText(json, html_element){
+    const textarea = document.querySelector(html_element);
+    textupdate = JSON.stringify(json, null, 4);
+    let header =  document.createElement('div');
+    let article = document.createElement('div');
+    header.className = 'grid-item grid-header';
+    header.innerHTML = `<h2>${html_element}</h2>`;
+    article.className = 'grid-item grid-footer';
+    article.innerText = textupdate;
+    textarea.appendChild(header);
+    textarea.appendChild(article);
 }
