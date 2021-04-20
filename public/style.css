@@ -28,22 +28,34 @@ body {
   .grid-body{
     background-color: rgb(85, 85, 85);
     color:azure;
-    grid-column: 3 / 5;
+    box-shadow: 10px 10px 20px 0px rgba(30, 7, 39, 0.75);
+    grid-column: 2 / 5;
     padding: 10px;
     margin: 10px;
+    max-height: 480px;
+    overflow:auto;
   }
   
   .grid-header{
+    padding: 0px;
+    margin: 0px;
     grid-column: 1 / 5;
     background-color: #000;
     
   }
 
-  .grid-footer{
+  .grid-output{
     grid-column: 1 / 5;
     background-color: rgb(85, 85, 85);
     color:azure;
     padding: 20px;
     margin: 20px;
-    
+    box-shadow: 10px 10px 20px 0px rgba(33, 9, 43, 0.75);
+    max-height: 480px;
+    overflow:auto; 
+  }
+
+  h3{
+    padding: 2px;
+    margin: 2px;
   }

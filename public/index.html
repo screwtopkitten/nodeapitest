@@ -22,27 +22,16 @@
     <div class="grid">
         <div class="grid-item grid-header">
     <input type="text" placeholder="Enter IP address" class="form_field" id="ip_value"> 
-    <button onclick='getIP()'>get IP info</button>
-    <button onclick='postAPI()'>Save to server</button>
+    <button onclick='validate()'> get IP info</button>
 </div>
     <div class="grid-item" id="mapip"></div>
 
-    <div class="grid-item">
-    <h2>Options</h2>
-<div id=greynoise></div>
-
-    </div>
     <div class="grid-item grid-body">
-    <h2>Pretty Output</h2>
-        
+    <div id=prettyprint></div>
 
        </div>
     </div>
 
-    <div id=shodan><h2>Raw JSON</h2></div>
-    <div id=greynoise></div>
-    <div id=virustotal></div>
-
-
+    <div id=rawoutput><h2>Raw JSON</h2></div>
 </body>
 </html>

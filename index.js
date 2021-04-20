@@ -38,11 +38,13 @@ app.get('/ip/:address', async (request,response) =>{
     const api_key = process.env.SHODAN_API_KEY;
     console.log(address);
     const shodan_url = `https://api.shodan.io/shodan/host/${address}?key=${api_key}`;
-
-
     console.log(shodan_url);
     const fetch_response = await fetch(shodan_url);
     const json =  await fetch_response.json();
+    const data = {"IP_Address" : address};
+    const timestamp = Date.now();
+    data.timestamp = timestamp;
+    database.insert(data);
     response.json(json);
 });
 
