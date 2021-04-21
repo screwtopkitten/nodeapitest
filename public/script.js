@@ -1,12 +1,3 @@
-//Global Variables
-const mymap = L.map('mapip').setView([0, 0], 1);
-const api_url = 'https://jolly-breeze-1568.bitserver.workers.dev/?http://ip-api.com/json/';
-const attribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>';
-const tileUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-const tiles = L.tileLayer(tileUrl,{attribution});
-const marker = L.marker([0, 0]).addTo(mymap);
-tiles.addTo(mymap);
-
 function validate(){
     const ip = document.getElementById('ip_value').value;
     const pattern = /\b(?:(?:2(?:[0-4][0-9]|5[0-5])|[0-1]?[0-9]?[0-9])\.){3}(?:(?:2([0-4][0-9]|5[0-5])|[0-1]?[0-9]?[0-9]))\b/ig;
@@ -18,38 +9,32 @@ function validate(){
     }
 }
 
-
 //Get IP geo location Function
 async function getIP(ip){   
     console.log(ip);
-    const response = await fetch(api_url + ip);
-    const data = await response.json();
-    console.log(data)
-    marker.setLatLng([data.lat, data.lon]);
-    marker.bindPopup(`
-        <b>${data.isp} </br> ${data.as}</b> </br>
-        City: ${data.city}</br>
-        Region: ${data.region}</br>
-        Country: ${data.country}</br>
-        Lat: ${data.lat} Lon: ${data.lon}
-        `).openPopup();
-    
-    apiurls = [
-        {
-            "header": "Shodan",
-            "api":'/ip/'
-        },
-        {
-            "header": "Greynoise",
-            "api": '/greynoise/'
-        },
-        {
-            "header": "Virustotal",
-            "api": '/vtip/'
-        }
-    ];
+    const selector = document.querySelector('#prettyprint');
+    const textarea = document.createElement('div');
+    textarea.className ="text";
+    selector.appendChild(textarea);
+        apiurls = [
+            {
+                "header": "Shodan",
+                "api":'/ip/'
+            },
+            {
+                "header": "Greynoise",
+                "api": '/greynoise/'
+            },
+            {
+                "header": "Virustotal",
+                "api": '/vtip/'
+            }
+        ];  
+  getAPI('https://jolly-breeze-1568.bitserver.workers.dev/?http://ip-api.com/json/',ip).then(x =>{ map(x);});   
+
     apiurls.forEach(element => {
-        getAPI(element.api,ip,element.header);
+        const article = document.createElement('div');
+        getAPI(element.api,ip).then(x =>{ prettyOutput(x, element.header,article,textarea);});     
     });
 }
 
@@ -73,51 +58,68 @@ async function getDB(){
 
 }
 
-async function getAPI(url, param, html_element){   
+async function getAPI(url, param){   
     const response = await fetch(url + param);
     const json = await response.json();
     console.log(json);
-    rawJson(json, html_element);
-    prettyOutput(json, html_element);
+    return json;
 }
 
-function rawJson(json, html_element){
-    const textarea = document.querySelector('#rawoutput');
-    textupdate = JSON.stringify(json, null, 4);
-    let header =  document.createElement('div');
-    let article = document.createElement('div');
-    header.className = 'grid-item grid-header';
-    header.innerHTML = `<h2>${html_element}</h2>`;
-    article.className = 'grid-item grid-output';
-    article.innerText = textupdate;
-    textarea.appendChild(header);
-    textarea.appendChild(article);
+function map(data){
+    const selector = document.querySelector('#prettyprint');
+    const rand = Math.random().toString(16).substr(2, 8);
+    const textarea = document.createElement('div');
+    textarea.className = "mapip";
+    textarea.id =rand;
+    selector.appendChild(textarea);
+    const mymap = L.map(textarea).setView([0, 0], 1);
+    const attribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>';
+    const tileUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+    const tiles = L.tileLayer(tileUrl,{attribution});
+    const marker = L.marker([0, 0]).addTo(mymap);
+    tiles.addTo(mymap);
+    marker.setLatLng([data.lat, data.lon]);
+    marker.bindPopup(`
+        <b>${data.isp} </br> ${data.as}</b> </br>
+        City: ${data.city}</br>
+        Region: ${data.region}</br>
+        Country: ${data.country}</br>
+        Lat: ${data.lat} Lon: ${data.lon}
+        `).openPopup();
 }
 
-function prettyOutput(json, html_element){
-    const textarea = document.querySelector('#prettyprint');
-    let header =  document.createElement('div');
-    let article = document.createElement('div');
-    header.innerHTML = `<h3>${html_element}</h3>`;
+function prettyOutput(json, html_element, article, textarea){
     if(html_element == "Shodan"){
         try{
-            article.innerHTML = `
-                    Last Updated: ${json.last_update}</br>
-                <p>
-                    IP: ${json.ip_str}</br>
-                    Ports: ${json.ports}</br>               
-                </p>
-                <p>
-                    Hostname: ${json.hostnames}</br>
-                    City: ${json.city}</br>
-                    Country: ${json.country_name}</br>
-                    Org: ${json.org}</br>
-                    ISP: ${json.isp}</br>
-                    ASN: ${json.asn}</br>
-                    Domains: ${json.domains}</br>
-                </p>
-           
-            `;
+            switch (json.error){
+                case 'No information available for that IP.':
+                    console.log('errors yall');
+                    article.innerHTML =`
+                    <h3>${html_element}</h3>
+                    <p>No information avalible from Shodan</p>
+                    `;
+                    break;
+                case undefined:
+                    console.log('woo');
+                    article.innerHTML = `
+                    <h3>${html_element}</h3>
+                        Last Updated: ${json.last_update}</br>
+                    <p>
+                        IP: ${json.ip_str}</br>
+                        Ports: ${json.ports}</br>               
+                    </p>
+                    <p>
+                        Hostname: ${json.hostnames}</br>
+                        City: ${json.city}</br>
+                        Country: ${json.country_name}</br>
+                        Org: ${json.org}</br>
+                        ISP: ${json.isp}</br>
+                        ASN: ${json.asn}</br>
+                        Domains: ${json.domains}</br>
+                    </p>           
+                    `;
+                    break;
+                }          
             }
         catch{
             article.innerHTML = `<H2>eRrOr</H2>`
@@ -125,31 +127,41 @@ function prettyOutput(json, html_element){
     }
     if(html_element == "Greynoise"){
         try{
-            article.innerHTML = `
-                    First Seen: ${json.first_seen}</br>
-                    Last Seen:  ${json.last_seen}</br>
-                <p>
-                    IP: ${json.ip}</br>
-                    Classification: ${json.classification}</br>
-                    Tags: ${json.tags}</br>
-                    CVE: ${json.cve}</br>        
-                </p>
-                <p>
-                    Orginisation: ${json.metadata.organization}</br>  
-                    Category: ${json.metadata.category}</br> 
-                    City: ${json.metadata.city}</br>
-                    Region: ${json.metadata.region}</br>
-                    Country: ${json.metadata.country}</br>    
-                </p>
-                <p>
-                    Actor: ${json.actor}</br>
-                    Bot: ${json.bot}</br>
-                    Tor: ${json.metadata.tor}</br>
-                    VPN: ${json.vpn}</br>
-                    VPN Service: ${json.vpn_service}</br> 
-                </p>
+            switch (json.seen){
+                case false:
+                    article.innerHTML =`
+                    <h3>${html_element}</h3>
+                    <p>No information avalible from Greynoise</p>
+                    `;
+                    break;
+                case true:
+                    article.innerHTML = `
+                    <h3>${html_element}</h3>
+                        First Seen: ${json.first_seen}</br>
+                        Last Seen:  ${json.last_seen}</br>
+                    <p>
+                        IP: ${json.ip}</br>
+                        Classification: ${json.classification}</br>
+                        Tags: ${json.tags}</br>
+                        CVE: ${json.cve}</br>        
+                    </p>
+                    <p>
+                        Orginisation: ${json.metadata.organization}</br>  
+                        Category: ${json.metadata.category}</br> 
+                        City: ${json.metadata.city}</br>
+                        Region: ${json.metadata.region}</br>
+                        Country: ${json.metadata.country}</br>    
+                    </p>
+                    <p>
+                        Actor: ${json.actor}</br>
+                        Bot: ${json.bot}</br>
+                        Tor: ${json.metadata.tor}</br>
+                        VPN: ${json.vpn}</br>
+                        VPN Service: ${json.vpn_service}</br> 
+                    </p>
            
-            `;
+                `;
+                }           
             }
         catch{
             article.innerHTML = `<H2>eRrOr</H2>`
@@ -158,6 +170,7 @@ function prettyOutput(json, html_element){
         if(html_element == "Virustotal"){
             try{
                 article.innerHTML = `
+                <h3>${html_element}</h3>
                 <p>
                     IP: ${json.data.id}</br>
                     ASN: ${json.data.attributes.asn}</br>
@@ -179,7 +192,6 @@ function prettyOutput(json, html_element){
                 article.innerHTML = `<H2>eRrOr</H2>`
             }
     }
-    
-    textarea.appendChild(header);
+
     textarea.appendChild(article);
     }

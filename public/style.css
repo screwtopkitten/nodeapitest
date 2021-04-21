@@ -1,61 +1,93 @@
-#mapip { 
-    height: 480px; 
-    width: 640px;
+@import url(https://fonts.googleapis.com/css?family=Open+Sans);
 
+
+h1{
+  margin: 1%;
+  padding: 1%;
 }
 body {
     color: rgb(255, 255, 255);
+    font-family: 'Open Sans';
     background-color: #000;
     margin: 0;
     padding: 0;
   }
 
-.grid{
-    display:grid;
-    gap: 1rem;
-    grid-template-columns: repeat(4, 1fr);
-  
-    /*explicit grid*/
-  }
-  
-  .grid-item{
-    background-color: rgb(85, 85, 85);
-    color:azure;
-    padding: 10px;
-    margin: 10px;
-  }
 
-  .grid-body{
-    background-color: rgb(85, 85, 85);
-    color:azure;
-    box-shadow: 10px 10px 20px 0px rgba(30, 7, 39, 0.75);
-    grid-column: 2 / 5;
-    padding: 10px;
-    margin: 10px;
-    max-height: 480px;
-    overflow:auto;
-  }
-  
-  .grid-header{
-    padding: 0px;
-    margin: 0px;
-    grid-column: 1 / 5;
-    background-color: #000;
-    
-  }
-
-  .grid-output{
-    grid-column: 1 / 5;
-    background-color: rgb(85, 85, 85);
-    color:azure;
-    padding: 20px;
-    margin: 20px;
-    box-shadow: 10px 10px 20px 0px rgba(33, 9, 43, 0.75);
-    max-height: 480px;
-    overflow:auto; 
-  }
 
   h3{
     padding: 2px;
     margin: 2px;
+  }
+  .btn_default{
+    background-color: #888;
+    color: rgb(255, 255, 255);
+    height: 40px;
+    min-width: 120px;
+    border: none;
+    border-radius: 5px;
+    font-size: 18px;
+  }
+  .btn_default:hover,
+  .btn_default:focus{
+    filter: grayscale(0%) opacity(1);
+    background: rgb(32, 32, 32);
+    color: #888;
+  
+  }
+
+  .form_field {
+    font-family: inherit;
+    width: 70%;
+    border: 0;
+    border-bottom: 2px solid rgb(87, 85, 85);
+    outline: 0;
+    font-size: 1.3rem;
+    color:#888;
+    padding: 1%;
+    margin: 1%;
+    background: transparent;
+    transition: border-color 0.2s;
+  }
+
+  @media only screen and (max-width: 900px) {
+    .mapip { 
+      height: 480px; 
+      width: 98%;
+      float:left;
+      margin: 1%;
+      padding: 1%;
+  
+  }
+  .text{
+    height: 480px; 
+    width: 98%;
+    float:left;
+    margin: 1%;
+    padding: 1%;
+    overflow: auto;
+    background-color: rgb(56, 53, 53);
+
+  }
+  }
+
+  @media only screen and (min-width: 900px) {
+    .mapip { 
+      height: 480px; 
+      width: 36%;
+      float:left;
+      margin: 1%;
+      padding: 1%;
+  
+  }
+  .text{
+    height: 480px; 
+    width: 56%;
+    float:left;
+    margin: 1%;
+    padding: 1%;
+    overflow: auto;
+    background-color: rgb(56, 53, 53);
+
+  }
   }
